@@ -1,0 +1,6 @@
+{
+  "name": "پاکستان یوتھ وائس اینڈ رائٹرز فورم (PYVWF)",
+  "description": "پاکستان یوتھ وائس اینڈ رائٹرز فورم - علم، ادب، کردار اور خدمت کا ترجمان ڈیجیٹل علمی و ادبی پلیٹ فارم۔",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
