@@ -12,8 +12,8 @@ import {
   Member,
   AdBanner
 } from '../types';
-import logoImg from '../assets/images/pyvwf_official_logo_1785860781972.jpg';
-import founderPhoto from '../assets/images/adnan_ilyas_exact_1785861715738.jpg';
+const logoImg = 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=600';
+const founderPhoto = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=600';
 
 export const ORGANISATION_INFO = {
   logo: logoImg,
