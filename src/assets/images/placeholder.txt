@@ -1,0 +1,1 @@
+Images folder - will be populated with assets
