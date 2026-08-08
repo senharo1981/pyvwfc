@@ -1,25 +1,3 @@
-Changa — main repo check karke wajah labh lai haan te sab ton probable reason dass reha haan. Short answer (seedha): GitHub Actions build fail ho rahi hai — sab ton zyada imkaan hai Node version mismatch da. Agar tusi chaunde ho, main workflow file edit karke commit kar denda/deni haan te deploy dobara trigger kar denda/deni — kehdo.
-
-Ki main labhiya (mukhtasar)
-- Repo Pages enabled (has_pages: true).
-- .github/workflows/deploy.yml build → npm install → npm run build → publish ./dist kar reha hai.
-- package.json build = "vite build" (the site must be built into ./dist).
-- Dist folder repo vich nahi (the static build artifact is generated only during CI).
-- Actions history vich kuch runs failed — example failed run: https://github.com/senharo1981/pyvwfc/actions/runs/31240356976
-- Important: package-lock shows some packages (e.g. @google/genai, @vitejs/plugin-react) specify engines requiring Node >=20. Workflow currently uses node-version: '18'. Node 18 likely causes npm install / build to fail.
-
-Kyun site nahi aa rahi (explain)
-1) Node version mismatch: workflow runs Node 18 but some dependencies require Node 20+ → npm install or vite build probably fails → ./dist never produced → peaceiris action has nothing to publish → Pages stays unchanged.
-2) Permissions: workflow has no explicit permissions block. Newer GitHub requirements often need pages: write permission for GITHUB_TOKEN to publish — add permissions to be safe.
-3) (Minor) Ensure vite base is set for GitHub Pages. Your vite.config.ts shows base: '/pyvwfc/' — that is correct for the URL you gave.
-
-Kiya karna chahida (recommended fix — quick)
-1) Update .github/workflows/deploy.yml:
-   - Use Node 20 (node-version: '20')
-   - Add permissions so GITHUB_TOKEN can publish pages
-   Example updated workflow (you can copy/paste):
-
-```yaml
 name: Build and Deploy to GitHub Pages
 
 permissions:
@@ -58,32 +36,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
-```
-
-Notes:
-- I changed npm install → npm ci for reproducible install in CI (recommended).
-- node-version set to '20' to match package engines.
-- permissions block lets the workflow write Pages.
-
-2) Locally test (before relying on CI):
-- Install Node 20 (nvm use 20 / download Node 20).
-- From repo root run:
-  - npm ci
-  - npm run build
-- After successful build check ./dist exists and contains index.html + assets.
-- Open dist/index.html locally (serve with a static server) to confirm everything loads.
-
-3) Trigger deployment:
-- Commit the workflow change to main (this will trigger CI) or re-run the failed workflow after changing Node on workflow.
-- If build still fails, open Actions → failing run → expand Jobs → see failing step and paste error here (mainly the npm install/build error). I can fetch logs if you want.
-
-Chakkiyaan (extra checks)
-- vite.config.ts: you have base '/pyvwfc/' — correct for GitHub Pages URL. Make sure vite.config.ts has valid syntax (no accidental "..." literal or duplicate export) because that would break build.
-- If you use a custom domain or CNAME, check Settings → Pages → Custom domain + DNS entries.
-
-Agla kadam — tusi kehdo:
-- A) Main hun hi workflow file update karke commit karaan? (main commit kar dunga te deploy trigger kar dunga)
-- B) Ya pehlan tusi local build try karke build logs paste karna chaunde ho?
-- C) Main Actions failing run di detailed logs fetch karke exact error message laawan?
-
-Jaldi daso — main jis option nu chunoge, oh kar dunga te tusi nu step-by-step result dikhawaanga.
